@@ -1,0 +1,5 @@
+best_checkpoint:
+  _target_: pytorch_lightning.callbacks.model_checkpoint.ModelCheckpoint
+  filename: 'checkpoint-{epoch:02d}'
+  every_n_epochs: 1
+  save_top_k: 5

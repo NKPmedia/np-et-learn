@@ -1,0 +1,8 @@
+
+defaults:
+  - predictor: predictor.yaml
+
+_target_: src.systems.control.random_controller.RandomController
+control_range: [[-5, 5] ]
+system_type:
+  _target_: src.systems.systems.dynamic_system.InvertedPendulumType

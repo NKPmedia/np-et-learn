@@ -1,0 +1,32 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - paths: default.yaml
+  - hydra: default.yaml
+  - logger: tensorboard.yaml
+  - trainer: default.yaml
+  - callbacks: default.yaml
+  - extras: default.yaml
+
+  # experiment configs allow for version control of specific hyperparameters
+  # e.g. best hyperparameters for given model and datamodule
+  - experiment: ???
+
+  # config for hyperparameter optimization
+  - hparams_search: null
+
+  # debugging config (enable through command line, e.g. `python train.py debug=default)
+  - debug: null
+
+  - override hydra/launcher: submitit_slurm
+
+tags: ["dev"]
+
+train: True
+test: True
+task_name: "train"
+compile: False
+ckpt_path: null
+seed: null
+yappi-profile: False

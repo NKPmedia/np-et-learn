@@ -1,0 +1,2 @@
+_target_: src.systems.predictor.fixed_window_nn_predictor.FixedWindowNNPredictor
+window_size: 300

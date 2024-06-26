@@ -1,0 +1,48 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - /data: invP/combined-rC/varLmM.yaml
+  - /eval_data/data: invP/pN-oneChangeLmM-traj.yaml
+  - /eval_data/scenario: moving_window_pred.yaml
+  - /model: NdCNP.yaml
+  - override /trainer: gpu.yaml
+  - override /hydra: local_sweep.yaml
+
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["invP", "multi_u", "cnp", "etl"]
+task_name: "invP_eval/ETL/winSizeSweep_diffVarParameter/pred-test-varLmM-rC"
+
+seed: 12345
+
+eval_data:
+  scenario:
+    name: "winSizeSweep"
+    system_type:
+      _target_: src.systems.systems.inverted_pendulum.InvertedPendulumType
+    predictor:
+      window_size: 200
+
+hydra:
+  sweeper:
+    params:
+      ++eval_data.scenario.predictor.window_size: 5, 20, 50, 70, 100, 200, 300
+  sweep:
+    subdir: winSize_${eval_data.scenario.predictor.window_size}
+
+ckpt_path: ${paths.log_dir}logs/invP-varLmM-rC/runs/2024-06-26_11-03-37/tensorboard/version_0/checkpoints/checkpoint-epoch=10-val_loss=-1.6114.ckpt
+strict_load: False
+
+model:
+  input_dim: 3
+  output_dim: 2
+  latent_dim: 128
+  global_residual: True
+  batch_norm: False
+  batch_norm_xencoder: False
+  batch_norm_deepset: False

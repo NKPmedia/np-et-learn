@@ -1,0 +1,12 @@
+defaults:
+  - /eval_data/scenario/controller/predictor@predictor: predictor.yaml
+
+_target_: src.utils.eval_scenario.predict_test.PredictTestScenario
+
+system_type:
+  _target_: src.systems.systems.dynamic_system.InvertedPendulumType
+
+observation_noise: 0.001
+chunk_size: 300
+
+name: ""

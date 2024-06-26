@@ -1,0 +1,6 @@
+_target_: src.data.dataset.trajectory_sampler.CombinedSampler
+sampler: [
+  _target_: src.data.dataset.trajectory_sampler.RandomTransitionSampler,
+  _target_: src.data.dataset.trajectory_sampler.NormalTrajectorySampler
+]
+prop: [0.5, 0.5]

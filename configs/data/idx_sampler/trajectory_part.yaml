@@ -1,0 +1,5 @@
+defaults:
+  - default.yaml
+
+_target_: src.data.dataset.idx_sampler.TrajectoryPartIdxSampler
+dropout: 0.2

@@ -1,0 +1,49 @@
+defaults:
+  - idx_sampler@offline_dataset_kwargs.idx_sampler: trajectory_part.yaml
+  - trajectory_sampler@data_generation_kwargs.context_trajectory_sampler: combined.yaml
+  - trajectory_sampler@data_generation_kwargs.target_trajectory_sampler: combined.yaml
+  - noise_adder@offline_dataset_kwargs.noise_adder: process_and_observation_gauss.yaml
+
+_target_: src.data.dynamic_system_datamodule.DynamicSystemDataModule
+pregenerated_data_path: ${paths.data_dir}/invP/combined/varLmM-rC
+batch_size: 64
+num_workers: 4
+pin_memory: False
+total_dataset_sizes: [50, 5, 5]
+
+state_idx: [0, 1, 2, 3]
+
+data_generation_kwargs:
+  system:
+    _target_: src.systems.systems.inverted_pendulum.InvertedPendulum
+  # 300.000.000 points
+
+  total_number_of_points: 1000
+  number_unrolls_per_sample: 300
+
+  parameter_sample_ranges: {"L": [0.1, 0.5], "m": [0.1, 0.5], "M": [0.5, 2]}
+  state_sample_ranges: {
+    "trajectory": [ [ -0.001, 0.001 ], [ -0.001, 0.001 ], [ -12, 12 ], [ -3, 3 ] ],
+    "random": [ [ -5, 5 ], [ -5, 5 ], [ -12, 12 ], [ -20, 20 ] ]
+  }
+
+  control_sample_ranges: [ [ -5, 5 ] ]
+
+offline_dataset_kwargs:
+  idx_sampler:
+    max_context_points: 300
+  noise_adder:
+    _target_: src.data.noise_adders.ProcessAndObservationNoiseAdder
+    observation_context_noise_level: 0.001
+    observation_target_noise_level: 0.001
+
+data_encoder_and_normalizer:
+  _target_: src.utils.encoder_and_normalizer.InvPNormalizerAndEncoder
+  #x_context, y_context, x_target, y_target
+  inp_std: [[6.138751,  1.3463428,   0.2451749, 0.334437,   5.3511043,   1.337748],
+            [6.138751,  1.3463428,   0.2451749, 0.334437,   5.3511043],
+            [5.8973246,  1.3463428,   0.2451749, 0.334437,   5.3511043,   1.337748],
+            [5.8973246,  1.3463428,   0.2451749, 0.334437,   5.3511043]]
+  inp_mean: [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]
+  inc_std: [[0.02960792, 0.09526347, 0.11824167, 0.3855852]]
+  inc_mean: [[0, 0, 0 ,0]]

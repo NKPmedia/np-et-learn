@@ -1,0 +1,11 @@
+_target_: src.utils.eval_scenario.fixed_context.FixedContextScenario
+start_idx: 0
+end_idx: 300
+noise_adder:
+  _target_: src.data.noise_adders.ProcessAndObservationNoiseAdder
+  observation_context_noise_level: 0.001
+  observation_target_noise_level: 0.001
+  process_context_noise_level: 0.01 # Gets scaled by magnitude of change in process
+  process_target_noise_level: 0.01  # Gets scaled by magnitude of change in process
+  state_idx: ${data.state_idx}
+state_idx: ${data.state_idx}

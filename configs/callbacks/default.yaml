@@ -1,0 +1,10 @@
+defaults:
+  - early_stopping.yaml
+  - lr_monitor.yaml
+  - checkpoint.yaml
+  - _self_
+
+early_stopping:
+  monitor: "val_loss"
+  patience: 30
+  mode: "min"

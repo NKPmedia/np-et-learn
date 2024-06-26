@@ -1,0 +1,48 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - /data: vdp/varU-combined-control.yaml
+  - /eval_data/data: vdp/contextTraj-traj.yaml
+  - /eval_data/scenario: fixed_context_multi_length_from0_s.yaml
+  - /model: NdCNP.yaml
+  - override /trainer: gpu.yaml
+  - override /model/scheduler: multiStep.yaml
+
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["vdp", "multi_u", "cnp"]
+task_name: "vdp-varU-combined-control"
+
+seed: 12345
+
+
+trainer:
+  min_epochs: 10
+  max_epochs: 80
+  gradient_clip_val: 0.5
+
+callbacks:
+  early_stopping:
+    patience: 1000
+
+model:
+  optimizer:
+    lr: 0.001
+  scheduler:
+    milestones: [40, 65, 70, 75]
+  input_dim: 3
+  output_dim: 2
+  latent_dim: 128
+  global_residual: True
+  batch_norm: False
+  batch_norm_xencoder: False
+  batch_norm_deepset: False
+
+data:
+  num_workers: 7
+  batch_size: 64

@@ -1,0 +1,13 @@
+defaults:
+  - controller: random.yaml
+  - interactor: interactor.yaml
+
+_target_: src.utils.eval_scenario.control_test.GymControlTestScenario
+
+observation_noise: 0.001
+process_noise: 0
+chunk_size: 50
+system_type:
+  _target_: src.systems.systems.dynamic_system.HalfCheethaType
+env_name: halfcheetah
+name: ""

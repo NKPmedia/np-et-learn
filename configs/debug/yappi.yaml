@@ -1,0 +1,15 @@
+# @package _global_
+
+# runs with execution time profiling
+
+defaults:
+  - default.yaml
+
+trainer:
+  accelerator: cpu
+  max_epochs: 1
+  limit_train_batches: 0.01
+  limit_val_batches: 0.01
+  limit_test_batches: 0.01
+
+yappi-profile: True

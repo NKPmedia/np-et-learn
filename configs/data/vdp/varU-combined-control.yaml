@@ -1,0 +1,40 @@
+defaults:
+  - idx_sampler@offline_dataset_kwargs.idx_sampler: trajectory_part.yaml
+  - trajectory_sampler@data_generation_kwargs.context_trajectory_sampler: combined.yaml
+  - trajectory_sampler@data_generation_kwargs.target_trajectory_sampler: combined.yaml
+  - noise_adder@offline_dataset_kwargs.noise_adder: process_and_observation_gauss.yaml
+
+_target_: src.data.dynamic_system_datamodule.DynamicSystemDataModule
+pregenerated_data_path: ${paths.data_dir}/combined-varU-vdp-data-control
+batch_size: 64
+num_workers: 4
+pin_memory: False
+total_dataset_sizes: [1000, 50, 50]
+
+state_idx: [0, 1]
+
+data_generation_kwargs:
+  system:
+    _target_: src.systems.systems.van_der_pol.VanDerPol
+
+  total_number_of_points: 1000
+  parameter_sample_ranges: { "u": [ 0.1, 2 ] }
+  state_sample_ranges: {
+    "trajectory": [ [ -4, 4 ], [ -4, 4 ] ],
+    "random": [ [ -4, 4 ], [ -4, 4 ] ]
+  }
+  number_unrolls_per_sample: 300
+  control_sample_ranges: [ [ -4, 4 ] ]
+
+
+offline_dataset_kwargs:
+  idx_sampler:
+    max_context_points: 300
+
+data_encoder_and_normalizer:
+  _target_: src.utils.encoder_and_normalizer.VdpNormalizerAndEncoder
+  #x_context, y_context, x_target, y_target
+  inp_std: [[0.948928,  0.9522902, 1], [0.9736485,  0.96645504], [0.9492089, 0.9521115, 1], [0.9752626, 0.9673994]]
+  inp_mean: [[0, 0, 0], [0, 0], [0, 0, 0], [0, 0]]
+  inc_std: [[0.02093719, 0.15849732]]
+  inc_mean: [[0, 0]]

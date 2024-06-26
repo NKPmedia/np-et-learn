@@ -1,0 +1,2 @@
+_target_: src.systems.predictor.latent_std_window_nn_predictor.LatentStdWindowNNPredictor
+window_size: 300

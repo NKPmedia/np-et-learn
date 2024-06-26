@@ -1,0 +1,46 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - /data: invP/combined-rC/varLmM.yaml
+  - /model: NdNN.yaml
+  - override /trainer: gpu.yaml
+  - override /model/scheduler: multiStep.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["invP", "multi_LmM", "nn"]
+task_name: "invP_models/base_nn/varLmM"
+
+seed: 12345
+
+compile: False
+
+trainer:
+  min_epochs: 10
+  max_epochs: 80
+  gradient_clip_val: 0.5
+
+callbacks:
+  early_stopping:
+    patience: 100
+
+model:
+  optimizer:
+    lr: 0.0005
+  scheduler:
+    milestones: [40, 65, 70, 75]
+  input_dim: 5
+  output_dim: 4
+  latent_dim: 128
+  global_residual: True
+  batch_norm: False
+  batch_norm_xencoder: False
+  batch_norm_deepset: False
+
+data:
+  num_workers: 7
+  batch_size: 64

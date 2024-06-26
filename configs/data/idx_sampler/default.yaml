@@ -1,0 +1,12 @@
+min_context_points: 1
+max_context_points: -1
+min_target_points: 1
+max_target_points: -1
+random_number_context: True
+random_number_target: False
+num_context_distribution:
+  _target_: torch.distributions.uniform.Uniform
+  _args_: [1, 300]
+num_target_distribution:
+  _target_: torch.distributions.uniform.Uniform
+  _args_: [1, 1000]

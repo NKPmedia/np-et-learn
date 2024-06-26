@@ -1,0 +1,19 @@
+defaults:
+  - scheduler: platou.yaml
+
+_target_: src.modules.nd_cnp.NdCNP
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+
+lr: 0.0001
+
+input_dim: 2
+output_dim: 2
+latent_dim: 128
+global_residual: True
+batch_norm: True
+
+data_encoder_and_normalizer: ${data.data_encoder_and_normalizer}
+state_idx: ${data.state_idx}

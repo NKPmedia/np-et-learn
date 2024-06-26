@@ -1,0 +1,8 @@
+
+defaults:
+  - predictor: predictor.yaml
+
+_target_: src.systems.control.random_controller.RandomController
+control_range: [ [ -1, 1 ], [ -1, 1 ], [ -1, 1 ]]
+system_type:
+  _target_: src.systems.systems.dynamic_system.HopperType

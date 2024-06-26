@@ -1,0 +1,5 @@
+lr_finder:
+  _target_: pytorch_lightning.callbacks.lr_finder.LearningRateFinder
+  min_lr: 1e-8
+  max_lr: 0.1
+  num_training_steps: 4000

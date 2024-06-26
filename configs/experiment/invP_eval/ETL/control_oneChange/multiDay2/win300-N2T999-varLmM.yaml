@@ -1,0 +1,51 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - /data: invP/combined-rC/varLmM.yaml
+  - /eval_data/data: invP/init_states/oneLargeSystemLargeChange2.yaml
+  - /eval_data/scenario: control_invP.yaml
+  - /model: NdCNP.yaml
+  - override /eval_data/scenario/controller@eval_data.scenario.controller: invP_mppi.yaml
+  - override /eval_data/scenario/controller/predictor@eval_data.scenario.controller.predictor: moving_window.yaml
+  - override /trainer: gpu.yaml
+
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["invP", "multi_LmM", "cnp", "etl"]
+task_name: "invP_eval/ETL/control_oneChange/multiDay2/win300-N2T999"
+
+seed: 12345
+
+ckpt_path: ${paths.log_dir}/invP_models/invP-varLmM-rC/multiruns/2023-06-30_23-30-27/0/ma-cnp/ec5347705cee4893953261dffda883aa/checkpoints/checkpoint-epoch=77-val_loss=-4.5467.ckpt
+strict_load: False
+
+eval_data:
+  data:
+    overwrite_size: null
+  scenario:
+    state_interactor:
+      _target_: src.systems.runner.interactors.ConstantInteractor
+      interaction_steps: [ 140, 280, 420, 560 ]
+      interactions: [ [ 0, 0, 3.1415, 0 ], [ 0, 0, 3.1415, 0 ], [ 0, 0, 3.1415, 0 ] , [ 0, 0, 3.1415, 0 ] ]
+    controller:
+      predictor:
+        window_size: 300
+        reset_trigger:
+          _target_: src.systems.predictor.reset.reset_trigger.GaussianNormTrigger
+          prop: 0.999
+          version: tight
+          ignore_trigger_steps: [ 140, 280, 420, 560 ]
+
+model:
+  input_dim: 3
+  output_dim: 2
+  latent_dim: 128
+  global_residual: True
+  batch_norm: False
+  batch_norm_xencoder: False
+  batch_norm_deepset: False

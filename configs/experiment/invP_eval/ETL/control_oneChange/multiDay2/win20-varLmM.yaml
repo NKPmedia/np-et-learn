@@ -1,0 +1,46 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - /data: invP/combined-rC/varLmM.yaml
+  - /eval_data/data: invP/init_states/oneLargeSystemLargeChange2.yaml
+  - /eval_data/scenario: control_invP.yaml
+  - /model: NdCNP.yaml
+  - override /eval_data/scenario/controller@eval_data.scenario.controller: invP_mppi.yaml
+  - override /eval_data/scenario/controller/predictor@eval_data.scenario.controller.predictor: moving_window.yaml
+  - override /trainer: gpu.yaml
+
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["invP", "multi_LmM", "cnp", "etl"]
+task_name: "invP_eval/ETL/control_oneChange/multiDay2/win20"
+
+seed: 12345
+
+ckpt_path: ${paths.log_dir}/invP-varLmM-rC/runs/2024-06-26_11-03-37/tensorboard/version_0/checkpoints/checkpoint-epoch=10-val_loss=-1.6114.ckpt
+strict_load: False
+
+eval_data:
+  data:
+    overwrite_size: null
+  scenario:
+    state_interactor:
+      _target_: src.systems.runner.interactors.ConstantInteractor
+      interaction_steps: [ 140, 280, 420, 560 ]
+      interactions: [ [ 0, 0, 3.1415, 0 ], [ 0, 0, 3.1415, 0 ], [ 0, 0, 3.1415, 0 ] , [ 0, 0, 3.1415, 0 ]]
+    controller:
+      predictor:
+        window_size: 20
+
+model:
+  input_dim: 3
+  output_dim: 2
+  latent_dim: 128
+  global_residual: True
+  batch_norm: False
+  batch_norm_xencoder: False
+  batch_norm_deepset: False

@@ -1,0 +1,7 @@
+_target_: src.systems.predictor.exact_predictor.ExactPredictor
+model: null
+data:
+  _target_: src.data.dataset.base.BasePckHdf5Loader
+  path: ${eval_data.data.path}
+  preload: ${eval_data.data.preload}
+  overwrite_size: ${eval_data.data.overwrite_size}

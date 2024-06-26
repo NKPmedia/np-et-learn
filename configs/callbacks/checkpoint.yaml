@@ -1,0 +1,7 @@
+best_checkpoint:
+  _target_: pytorch_lightning.callbacks.model_checkpoint.ModelCheckpoint
+  save_top_k: 1
+  monitor: "val_loss"
+  mode: "min"
+  filename: 'checkpoint-{epoch:02d}-{val_loss:.4f}'
+  save_last: True

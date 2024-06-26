@@ -1,0 +1,4 @@
+defaults:
+  - default.yaml
+
+_target_: src.data.dataset.idx_sampler.AllRandomIdxSampler

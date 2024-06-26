@@ -1,0 +1,28 @@
+
+defaults:
+  - predictor: predictor.yaml
+
+_target_: src.systems.control.mppi.MPPI
+beta: 0.9
+popsize: 500
+kappa: 0.9
+noise_sigma: 1
+pred_len: 75
+iterations: 3
+particles: 1
+noise_factor: 0.4
+
+state_cost:
+  _target_: src.systems.enviroment.other_mppi_costs.HopperStateCost
+  healthy_reward: 3
+terminal_state_cost:
+  _target_: src.systems.enviroment.other_mppi_costs.HopperTerminalCost
+input_cost:
+  _target_: src.systems.enviroment.other_mppi_costs.HopperInputCost
+
+input_bounds: [ [ -1, 1 ], [ -1, 1 ], [ -1, 1 ]]
+system_type:
+  _target_: src.systems.systems.dynamic_system.HopperType
+
+predictor:
+  unroll_mode: mean_propagation

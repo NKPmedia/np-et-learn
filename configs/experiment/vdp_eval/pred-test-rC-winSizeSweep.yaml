@@ -1,0 +1,48 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - /data: vdp/varU-combined-control.yaml
+  - /eval_data/data: vdp/pN-rC-oneChange-traj.yaml
+  - /eval_data/scenario: traj_pred_vdp.yaml
+  - /model: NdCNP.yaml
+  - override /trainer: gpu.yaml
+  - override /eval_data/scenario/controller/predictor@eval_data.scenario.predictor: moving_window.yaml
+  - override /hydra: local_sweep.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["vdp", "multi_u", "cnp", "etl"]
+task_name: "vdp_eval/ETL/oneChangeLarge-rC/pred-test-rC-winSizeSweep"
+
+seed: 12345
+
+eval_data:
+  scenario:
+    predictor:
+      window_size: 20
+      reset_trigger:
+        _target_: src.systems.predictor.reset.reset_trigger.ConstantTrigger
+        reset_steps: []
+
+hydra:
+  sweeper:
+    params:
+      ++eval_data.scenario.predictor.window_size: 5, 20, 50, 70, 100, 150, 200, 250, 300
+  sweep:
+    subdir: winSize_${eval_data.scenario.predictor.window_size}
+
+ckpt_path: ${paths.log_dir}/vdp_models/combined/vdp-varU-combined-control/multiruns/2023-06-06_13-01-13/0/ma-cnp/6422821bd06548beb7cb12396776edf0/checkpoints/checkpoint-epoch=77-val_loss=-4.9867.ckpt
+strict_load: False
+
+model:
+  input_dim: 3
+  output_dim: 2
+  latent_dim: 128
+  global_residual: True
+  batch_norm: False
+  batch_norm_xencoder: False
+  batch_norm_deepset: False

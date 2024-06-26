@@ -1,0 +1,2 @@
+_target_: src.systems.predictor.moving_window_nn_predictor.MovingWindowNNPredictor
+window_size: 300
